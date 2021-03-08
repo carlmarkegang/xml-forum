@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>xml_forum_process</RootNamespace>
+    <StartupObject>xml_forum_process.Program</StartupObject>
+  </PropertyGroup>
+
+</Project>

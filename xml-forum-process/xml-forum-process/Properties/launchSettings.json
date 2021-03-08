@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "xml-forum-process": {
+      "commandName": "Project",
+      "commandLineArgs": "C:/InfoSolutions/Utveckling/xml-forum/xml-forum"
+    }
+  }
+}

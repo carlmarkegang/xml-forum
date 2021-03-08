@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xml-forum-process", "xml-forum-process\xml-forum-process.csproj", "{9E7BF946-7E39-444E-A5E8-3910FFB93012}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E7BF946-7E39-444E-A5E8-3910FFB93012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E7BF946-7E39-444E-A5E8-3910FFB93012}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E7BF946-7E39-444E-A5E8-3910FFB93012}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E7BF946-7E39-444E-A5E8-3910FFB93012}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8609BE8A-24BE-43FA-9221-F9CCDBEAEAF2}
+	EndGlobalSection
+EndGlobal

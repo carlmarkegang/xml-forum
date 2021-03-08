@@ -20,14 +20,18 @@ namespace xml_forum
         {
             string filepath = HttpContext.Current.Server.MapPath("/Files/");
             DirectoryInfo d = new DirectoryInfo(filepath);
-            myFile = (from f in d.GetFiles() orderby f.LastWriteTime descending select f).First();
+            if (d.GetFiles().Length > 0)
+            {
+                myFile = (from f in d.GetFiles() orderby f.LastWriteTime descending select f).First();
+                Posts = LoadPosts(myFile.FullName);
+            }
 
-            Posts = LoadPosts(myFile.FullName);
+            
 
             CreateXml();
-            ProcessFiles();
 
-            File.Move(myFile.FullName, HttpContext.Current.Server.MapPath("/Files/Archive/" + myFile.Name));
+
+          
         }
 
         public XmlNodeList LoadPosts(string filepath)
@@ -41,46 +45,6 @@ namespace xml_forum
             return returnlist;
         }
 
-        public Boolean ProcessFiles()
-        {
-            string filepath = HttpContext.Current.Server.MapPath("/Files/ToProcess/");
-            DirectoryInfo d = new DirectoryInfo(filepath);
-
-            foreach (var file in d.GetFiles("*.xml"))
-            {
-                XmlNodeList Posts = LoadPosts(file.FullName);
-                CreateNewPostXml(filepath, Posts);
-                File.Delete(file.FullName);
-            }
-
-            return true;
-        }
-
-        public Boolean CreateNewPostXml(string filename, XmlNodeList Posts)
-        {
-            XmlDocument inxml = new XmlDocument();
-            inxml.XmlResolver = null;
-            inxml.Load(myFile.FullName);
-
-            XmlNode PostsNode = inxml.SelectSingleNode("Posts");
-            foreach (XmlNode Post in Posts)
-            {
-                XmlElement create_post = inxml.CreateElement("Post");
-                create_post.InnerText = Post.InnerText;
-                PostsNode.AppendChild(create_post);
-            }
-
-            Encoding enc = Encoding.GetEncoding("utf-8");     
-
-            string savePath = HttpContext.Current.Server.MapPath("/Files/");
-            string fileName = Guid.NewGuid().ToString() + ".xml";
-            XmlTextWriter xwriter = new XmlTextWriter(savePath + fileName, enc);
-            inxml.Save(xwriter);
-            xwriter.Close();
-
-            return true;
-
-        }
 
         public Boolean CreateXml()
         {
