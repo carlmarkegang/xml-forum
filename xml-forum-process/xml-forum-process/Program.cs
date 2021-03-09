@@ -9,17 +9,12 @@ namespace xml_forum_process
 {
     class Program
     {
-
-        static FileInfo myFile;
         static string filepath_full;
 
         static void Main(string[] args)
         {
             filepath_full = args[0];
-            DirectoryInfo d = new DirectoryInfo(filepath_full + "/files/");
-            myFile = (from FileInfo f in d.GetFiles() orderby f.LastWriteTime descending select f).First();
             ProcessFiles();
-            File.Move(myFile.FullName, filepath_full + "/Files/Archive/" + myFile.Name);
         }
 
 
@@ -29,29 +24,39 @@ namespace xml_forum_process
             DirectoryInfo d = new DirectoryInfo(filepath);
             var PostsList = new List<string>();
 
-            foreach (var file in d.GetFiles("*.xml"))
+            foreach (DirectoryInfo folder in d.GetDirectories())
             {
-
-                XmlNodeList Posts = LoadPosts(file.FullName);
-                foreach (XmlNode Post in Posts)
+                foreach (FileInfo file in folder.GetFiles("*.xml"))
                 {
-                    PostsList.Add(Post.InnerText);
-                }
-                File.Delete(file.FullName);
 
+                    XmlNodeList Posts = LoadPosts(file.FullName);
+                    foreach (XmlNode Post in Posts)
+                    {
+                        PostsList.Add(Post.InnerText);
+                    }
+                    
+
+                    CreateBaseXml(folder.Name);
+                    AddNewPostsToXml(folder.Name, PostsList);
+                    File.Delete(file.FullName);
+                }
+
+          
             }
 
-            CreateNewPostXml(filepath, PostsList);
 
 
             return true;
         }
 
-        static Boolean CreateNewPostXml(string filename, List<string> Posts)
+        static Boolean AddNewPostsToXml(string folderName, List<string> Posts)
         {
             XmlDocument inxml = new XmlDocument();
             inxml.XmlResolver = null;
-            inxml.Load(myFile.FullName);
+            string savePath = filepath_full + "/Files/Posts/" + folderName + "/";
+            DirectoryInfo d = new DirectoryInfo(savePath);
+            FileInfo filename = (from f in d.GetFiles() orderby f.LastWriteTime descending select f).First();
+            inxml.Load(savePath + filename.Name);
 
             XmlNode PostsNode = inxml.SelectSingleNode("Posts");
             foreach (string Post in Posts)
@@ -63,14 +68,38 @@ namespace xml_forum_process
 
             Encoding enc = Encoding.GetEncoding("utf-8");
 
-            string savePath = filepath_full + "/Files/";
+            XmlTextWriter xwriter = new XmlTextWriter(savePath + filename.Name, enc);
+            inxml.Save(xwriter);
+            xwriter.Close();
+
+            return true;
+
+        }
+
+        static Boolean CreateBaseXml(string folderName)
+        {
+            if (System.IO.Directory.Exists(filepath_full + "/Files/Posts/" + folderName + "/"))
+            {
+                return true;
+            }
+            XmlDocument inxml = new XmlDocument();
+            inxml.XmlResolver = null;
+
+            XmlElement create_posts = inxml.CreateElement("Posts");
+            inxml.AppendChild(create_posts);
+
+
+            Encoding enc = Encoding.GetEncoding("utf-8");
+
+            string savePath = filepath_full + "/Files/Posts/" + folderName + "/";
+            CreateFolderIfNotExists(savePath);
+
             string fileName = Guid.NewGuid().ToString() + ".xml";
             XmlTextWriter xwriter = new XmlTextWriter(savePath + fileName, enc);
             inxml.Save(xwriter);
             xwriter.Close();
 
             return true;
-
         }
 
         static XmlNodeList LoadPosts(string filepath)
@@ -82,6 +111,17 @@ namespace xml_forum_process
             XmlNodeList returnlist = inxml.SelectNodes("Posts/Post");
 
             return returnlist;
+        }
+
+        static Boolean CreateFolderIfNotExists(string folderPath)
+        {
+            bool exists = System.IO.Directory.Exists(folderPath);
+
+            if (!exists)
+            {
+                System.IO.Directory.CreateDirectory(folderPath);
+            }
+            return true;
         }
 
     }

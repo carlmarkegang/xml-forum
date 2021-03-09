@@ -2,7 +2,7 @@
   "profiles": {
     "xml-forum-process": {
       "commandName": "Project",
-      "commandLineArgs": "C:/InfoSolutions/Utveckling/xml-forum/xml-forum"
+      "commandLineArgs": "C:\\Users\\huled\\Desktop\\xml\\git-xml-forum\\xml-forum"
     }
   }
 }
